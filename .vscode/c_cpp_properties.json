@@ -1,0 +1,68 @@
+{
+    "configurations": [
+        {
+            "name": "ESP32-C3",
+            "compilerPath": "/home/user/.arduino15/packages/esp32/tools/esp-rv32/2601/bin/riscv32-esp-elf-g++",
+            "includePath": [
+                "${workspaceFolder}",
+                "${workspaceFolder}/**",
+                "/home/user/Arduino/libraries/**",
+                "/home/user/shares/personal/dev/arduino/libs/**",
+                "/home/user/.arduino15/packages/esp32/hardware/esp32/3.3.10/cores/esp32",
+                "/home/user/.arduino15/packages/esp32/hardware/esp32/3.3.10/variants/XIAO_ESP32C3",
+                "/home/user/.arduino15/packages/esp32/hardware/esp32/3.3.10/libraries/**",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/**",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/esp_rom/esp32c3/include/esp32c3",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/**/esp32c3",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/**/esp32c3/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/esp_driver_usb_serial_jtag/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/esp_driver_gpio/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/esp_driver_uart/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/esp_driver_spi/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/esp_driver_i2c/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/**/platform_include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/**/register",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/**/port",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/**/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/riscv/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/soc/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/soc/esp32c3/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/esp_rom/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/esp_rom/esp32c3/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/bt/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/freertos/FreeRTOS-Kernel/portable/riscv/include/freertos",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/freertos/FreeRTOS-Kernel/portable/riscv/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/freertos/FreeRTOS-Kernel/include/freertos",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/freertos/FreeRTOS-Kernel/include",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/freertos/config/riscv/include/freertos",
+                "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10/include/freertos/config/riscv/include"
+            ],
+            "defines": [
+                "ARDUINO=10819",
+                "ARDUINO_ARCH_ESP32",
+                "ESP32",
+                "ESP_PLATFORM",
+                "CONFIG_IDF_TARGET_ESP32C3",
+                "ARDUINO_XIAO_ESP32C3",
+                "ARDUINO_USB_MODE=1",
+                "ARDUINO_USB_CDC_ON_BOOT=1"
+            ],
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64",
+            "browse": {
+                "path": [
+                    "${workspaceFolder}",
+                    "/home/user/Arduino/libraries",
+                    "/home/user/shares/personal/dev/arduino/libs",
+                    "/home/user/.arduino15/packages/esp32/hardware/esp32/3.3.10/cores/esp32",
+                    "/home/user/.arduino15/packages/esp32/hardware/esp32/3.3.10/variants/XIAO_ESP32C3",
+                    "/home/user/.arduino15/packages/esp32/hardware/esp32/3.3.10/libraries",
+                    "/home/user/.arduino15/packages/esp32/tools/esp32c3-libs/3.3.10"
+                ],
+                "limitSymbolsToIncludedHeaders": true
+            }
+        }
+    ],
+    "version": 4
+}
