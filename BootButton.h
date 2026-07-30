@@ -1,6 +1,23 @@
 #ifndef BOOTBUTTON_H
 #define BOOTBUTTON_H
 
+/**
+ * @file BootButton.h
+ * @brief Onboard BOOT Button Handler & Calibration Reset
+ * 
+ * @details
+ * The BootButton class monitors the onboard BOOT button (GPIO 9 on the Seeed Studio XIAO ESP32-C3)
+ * to handle physical user interaction, specifically triggering a soil moisture calibration reset.
+ * 
+ * Hardware & Logic:
+ * - Pin: GPIO 9 configured as INPUT_PULLUP (active-LOW; pressing pulls the pin LOW).
+ * - State Machine: RELEASED -> PRESSING -> TRIGGERED.
+ * - Long-Press Action: Holding the button for 3 seconds (LONG_PRESS_MS = 3000 ms) calls
+ *   Moisture::resetCalibration(), which wipes stored dry/wet bounds (rawMin/rawMax) from NVS flash.
+ * - Re-arm Guard: The TRIGGERED state prevents multiple resets while holding; the button must
+ *   be fully released before a new long-press cycle can be armed.
+ */
+
 #include "Moisture.h"
 
 // GPIO9 is the BOOT button on the XIAO ESP32C3.
@@ -11,8 +28,20 @@
 class BootButton {
 
 public:
+  /**
+   * @brief Constructs a BootButton instance tied to the Moisture controller.
+   * @param moisture Reference to the Moisture manager to trigger calibration resets.
+   */
   BootButton(Moisture& moisture);
+
+  /**
+   * @brief Configures GPIO 9 pin mode with internal pull-up resistor.
+   */
   void init();
+
+  /**
+   * @brief Non-blocking state machine loop to track button press durations.
+   */
   void loop();
 
 private:
