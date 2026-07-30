@@ -14,8 +14,10 @@
  * - State Machine: RELEASED -> PRESSING -> TRIGGERED.
  * - Long-Press Action: Holding the button for 3 seconds (LONG_PRESS_MS = 3000 ms) calls
  *   Moisture::resetCalibration(), which wipes stored dry/wet bounds (rawMin/rawMax) from NVS flash.
- * - Re-arm Guard: The TRIGGERED state prevents multiple resets while holding; the button must
- *   be fully released before a new long-press cycle can be armed.
+ * @warning Deep Sleep Behavior:
+ * Button polling in loop() only runs while the ESP32 is awake. During deep sleep (CPU powered off),
+ * pressing the BOOT button will NOT trigger a calibration reset. To calibrate a sleeping sensor,
+ * press RESET (or power cycle) first to wake the MCU into an active window, then hold BOOT for 3 seconds.
  */
 
 #include "Moisture.h"
