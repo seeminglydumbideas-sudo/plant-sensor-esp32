@@ -1,5 +1,5 @@
 #!/bin/bash
-# deploy.sh - Compile and flash tool for Seeed Studio XIAO ESP32C3 (sensor3-bt)
+# deploy.sh - Compile and/or flash tool for Seeed Studio XIAO ESP32C3
 
 # Validate SENSOR_ID environment variable
 if [ -z "$SENSOR_ID" ]; then
@@ -7,14 +7,15 @@ if [ -z "$SENSOR_ID" ]; then
     echo "ERROR: SENSOR_ID environment variable is missing!"
     echo "======================================================="
     echo "You must specify the SENSOR_ID environment variable when calling this script."
+    echo "(SENSOR_ID is a 5-30 char string to identify your sensor)"
     echo ""
     echo "Usage:"
     echo "  SENSOR_ID=<id> $0 [options] [port]"
     echo ""
     echo "Examples:"
     echo "  SENSOR_ID=veg_1 $0"
-    echo "  SENSOR_ID=veg_2 $0 /dev/ttyACM1"
-    echo "  SENSOR_ID=veg_3 $0 --compile-only"
+    echo "  SENSOR_ID=plantXY_1st_floor $0 /dev/ttyACM1"
+    echo "  SENSOR_ID=geranium_3 $0 --compile-only"
     echo ""
     exit 1
 fi
