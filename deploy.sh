@@ -7,15 +7,26 @@ if [ -z "$SENSOR_ID" ]; then
     echo "ERROR: SENSOR_ID environment variable is missing!"
     echo "======================================================="
     echo "You must specify the SENSOR_ID environment variable when calling this script."
-    echo "(SENSOR_ID is a 5-30 char string to identify your sensor)"
+    echo "(SENSOR_ID must be 1 to 15 characters long to fit in BLE advertisement packets)"
     echo ""
     echo "Usage:"
     echo "  SENSOR_ID=<id> $0 [options] [port]"
     echo ""
     echo "Examples:"
     echo "  SENSOR_ID=veg_1 $0"
-    echo "  SENSOR_ID=plantXY_1st_floor $0 /dev/ttyACM1"
+    echo "  SENSOR_ID=hydro_pothos_1 $0 /dev/ttyACM1"
     echo "  SENSOR_ID=geranium_3 $0 --compile-only"
+    echo ""
+    exit 1
+fi
+
+if [ ${#SENSOR_ID} -gt 15 ]; then
+    echo "======================================================="
+    echo "ERROR: SENSOR_ID is too long! (${#SENSOR_ID} characters)"
+    echo "======================================================="
+    echo "SENSOR_ID must be 15 characters or fewer to fit inside the BLE"
+    echo "31-byte scan response packet (16 bytes header/payload + name)."
+    echo "Current SENSOR_ID: \"$SENSOR_ID\""
     echo ""
     exit 1
 fi
