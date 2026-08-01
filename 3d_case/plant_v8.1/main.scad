@@ -112,7 +112,10 @@ module case_left(main_pos,main_vol,edge_depth,edge_width,battery_length) {
      difference() {
        cylinder(h=16,r=1.9,center=true);
        hole_screw_m2();
-     }         
+     }
+  // temp : reset button position
+  //translate([4.5,2.5,13])
+  //  cylinder(h=10,r=0.3,center=true);      
 }
 
 module case_right(main_pos,main_vol,edge_depth,edge_width,edge_tol,battery_length) {
@@ -218,4 +221,6 @@ if (_print)
  if (_model)
   color("#a09090",0.5)
     model(_batLg);
+ 
+ 
  
