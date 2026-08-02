@@ -94,10 +94,16 @@ module hole_screw_m2() {
 SCREW_Z=4;
 
 module case_left(main_pos,main_vol,edge_depth,edge_width,battery_length) {    
+    
+
  // volume - hole
  difference() {    
     volume_left(main_pos,main_vol,edge_depth,edge_width);
     hole_model(battery_length);
+    // temp : reset button position
+    translate([4.5,2.2,13])
+      cylinder(h=10,d=1,center=true);  
+     
  } 
  // things to hold sensor
  difference() {
@@ -113,9 +119,6 @@ module case_left(main_pos,main_vol,edge_depth,edge_width,battery_length) {
        cylinder(h=16,r=1.9,center=true);
        hole_screw_m2();
      }
-  // temp : reset button position
-  //translate([4.5,2.5,13])
-  //  cylinder(h=10,r=0.3,center=true);      
 }
 
 module case_right(main_pos,main_vol,edge_depth,edge_width,edge_tol,battery_length) {
@@ -199,8 +202,8 @@ module view_print(pos,vol,ed,ew,et,bl,space) {
 // MAIN
 // ================
 
-_pos=[0 , -6+_batLg/2, 5.4];
-_vol=[24, 33+_batLg,  15];
+_pos=[0 , -5.5+_batLg/2, 5.4];
+_vol=[24, 35+_batLg,  15];
 _edge_tol=0.1;
 
 // DEBUG insert only
