@@ -9,8 +9,9 @@ Use 2x220k resistor on an analog port to read voltage value (battery or USB)
 ref: https://wiki.seeedstudio.com/check_battery_voltage/
 */
 
-// bootCount stored in RTC RAM: survives deep sleep, resets on power cycle.
+// RTC RAM variables: survive deep sleep, reset on cold power cycle.
 RTC_DATA_ATTR int bootCount = 0;
+RTC_DATA_ATTR uint32_t totalElapsedSec = 0;
 
 float PowerManager::getLevel() {
   uint32_t Vbatt = 0;
@@ -24,8 +25,12 @@ int PowerManager::checkSource() {
   return getLevel() > 4.1 ? POWER_USB : POWER_BAT;
 }
 
-int PowerManager::getBootCount() {
+int PowerManager::getBootCount() const {
   return bootCount;
+}
+
+uint32_t PowerManager::getTotalElapsedSec() const {
+  return totalElapsedSec;
 }
 
 void PowerManager::_incBootCount() {
@@ -33,12 +38,23 @@ void PowerManager::_incBootCount() {
 }
 
 void PowerManager::init() {
-  Serial.println("[INFO ] Boot number: " + String(getBootCount()));
+  Serial.printf("[INFO ] Boot #%d (total elapsed: %lu min / %lu sec)\n",
+                getBootCount(), (unsigned long)(getTotalElapsedSec() / 60), (unsigned long)getTotalElapsedSec());
   pinMode(A2, INPUT); // ADC on port D2
   _dataReady  = false;
   _calibrated = false;
   _printWakeupReason();
   _incBootCount();
+}
+
+SleepMode PowerManager::getSleepMode() const {
+  if (getBootCount() == 1 && millis() < REFLASH_SAFETY_WINDOW_MS) {
+    return SleepMode::REFLASH_SAFETY_DELAY;
+  }
+  if (getTotalElapsedSec() < SHORT_SLEEP_WINDOW_SEC) {
+    return SleepMode::SHORT_DEEP_SLEEP;
+  }
+  return SleepMode::LONG_DEEP_SLEEP;
 }
 
 void PowerManager::notifyDataReady(bool calibrated) {
@@ -55,31 +71,48 @@ void PowerManager::loop() {
   if (millis() - _dataReadyAt < BROADCAST_WINDOW_MS) return; // broadcast window
   _dataReady = false;
 
-  if (getBootCount() <= LONG_SLEEP_BOOT_THRESHOLD) {
-    Serial.printf("[INFO ] Deep sleep 2min (boot %d/%d)\n", getBootCount(), LONG_SLEEP_BOOT_THRESHOLD);
-    _deepSleep(120);
-  } else {
-    Serial.printf("[INFO ] Deep sleep %ldmin\n", (long)(LONG_SLEEP_DURATION_SEC / 60));
-    _deepSleep(LONG_SLEEP_DURATION_SEC);
+  switch (getSleepMode()) {
+    case SleepMode::REFLASH_SAFETY_DELAY:
+      _handleReflashSafetyDelay(SHORT_SLEEP_DURATION_SEC);
+      break;
+    case SleepMode::SHORT_DEEP_SLEEP:
+      _enterHardwareDeepSleep(SHORT_SLEEP_DURATION_SEC);
+      break;
+    case SleepMode::LONG_DEEP_SLEEP:
+      _enterHardwareDeepSleep(LONG_SLEEP_DURATION_SEC);
+      break;
   }
 }
 
-#define FIRST_BOOT_SAFETY_MS (120 * 1000UL) // 1-minute reflash window on first boot
+void PowerManager::_handleReflashSafetyDelay(unsigned long seconds) {
+  unsigned long remaining = (millis() < REFLASH_SAFETY_WINDOW_MS)
+                          ? (REFLASH_SAFETY_WINDOW_MS - millis()) / 1000
+                          : 0;
+  Serial.printf("[INFO ] [REFLASH_SAFETY_DELAY] Delaying %lus (reflash window: %lus left)\n", seconds, remaining);
 
-void PowerManager::_deepSleep(unsigned long seconds) {
-  // On the very first boot (cold power-on), stay awake for some minute
-  // so the firmware can be reflashed without fighting deep sleep.
-  // Deep sleep wakeups have bootCount > 1 and are not affected.
-  if (getBootCount() == 1 && millis() < FIRST_BOOT_SAFETY_MS) {
-    unsigned long remaining = (FIRST_BOOT_SAFETY_MS - millis()) / 1000;
-    Serial.printf("[INFO ] First boot safety window — delay %lus (reflash window: %lus left)\n", seconds, remaining);
-    
-    // Stop BLE advertising to simulate deep sleep during this delay
-    BLEDevice::getAdvertising()->stop();
+  // Stop BLE advertising to simulate deep sleep during this delay
+  BLEDevice::getAdvertising()->stop();
 
-    delay(seconds * 1000);
-    return;
+  // Accumulate delay into total elapsed time
+  totalElapsedSec += seconds;
+
+  delay(seconds * 1000);
+}
+
+void PowerManager::_enterHardwareDeepSleep(unsigned long seconds) {
+  if (seconds >= 60) {
+    Serial.printf("[INFO ] [%s] Entering hardware deep sleep for %ldmin (elapsed: %lu min / %lu min window)\n",
+                  getSleepMode() == SleepMode::SHORT_DEEP_SLEEP ? "SHORT_DEEP_SLEEP" : "LONG_DEEP_SLEEP",
+                  seconds / 60, (unsigned long)(getTotalElapsedSec() / 60), (unsigned long)(SHORT_SLEEP_WINDOW_SEC / 60));
+  } else {
+    Serial.printf("[INFO ] [%s] Entering hardware deep sleep for %lusec (elapsed: %lusec)\n",
+                  getSleepMode() == SleepMode::SHORT_DEEP_SLEEP ? "SHORT_DEEP_SLEEP" : "LONG_DEEP_SLEEP",
+                  seconds, (unsigned long)getTotalElapsedSec());
   }
+
+  // Accumulate active runtime + sleep duration into RTC time tracking
+  totalElapsedSec += (millis() / 1000) + seconds;
+
   esp_sleep_enable_timer_wakeup(seconds * 1000000ULL);
   delay(100); // flush serial output before sleeping
   esp_deep_sleep_start();

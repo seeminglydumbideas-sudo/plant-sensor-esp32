@@ -56,10 +56,11 @@ The sensor uses automatic bound tracking to calculate soil moisture percentages 
 
 To calibrate a sensor:
 
-1. *Reset Calibration:* Press and hold the onboard *BOOT button (GPIO 9)* for 3 seconds. The serial output will log `[INFO] Moisture calibration reset`, clearing stored bounds (`rawMin = 4095`, `rawMax = 0`).
-2. *Set Dry Bound (0%):* Expose the capacitive probe to dry air (or insert into completely dry soil) during a sample cycle. The highest ADC value measured will automatically be saved as `rawMax`.
-3. *Set Wet Bound (100%):* Submerge the probe in water up to the max fill line (or insert into fully saturated soil) during a sample cycle. The lowest ADC value measured will automatically be saved as `rawMin`.
-4. *Automatic Calculation:* Once `rawMax > rawMin + 500`, the firmware calculates moisture as:
+1. *Wake Device:* Press the *RST button* (or power-cycle the board) to ensure the ESP32 is awake and not in deep sleep mode.
+2. *Reset Calibration:* Press and hold the onboard *BOOT button (GPIO 9)* for 3 seconds. The serial output will log `[INFO] Moisture calibration reset`, clearing stored bounds (`rawMin = 4095`, `rawMax = 0`).
+3. *Set Dry Bound (0%):* Expose the capacitive probe to dry air (or insert into completely dry soil) during a sample cycle (typically 2-4 minutes). The highest ADC value measured will automatically be saved as `rawMax`.
+4. *Set Wet Bound (100%):* Submerge the probe in water up to the max fill line (or insert into fully saturated soil) during a sample cycle. The lowest ADC value measured will automatically be saved as `rawMin`.
+5. *Automatic Calculation:* Once `rawMax > rawMin + 500`, the firmware calculates moisture as:
 +
 [source,cpp]
 ----
